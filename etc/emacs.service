@@ -1,0 +1,28 @@
+# Copy this service file to ~/.config/systemd/user/emacs.service
+# https://www.emacswiki.org/emacs/EmacsAsDaemon#toc8
+# http://blog.refu.co/?p=1296
+#
+# Control:
+#	systemctl --user enable emacs
+#	systemctl --user start emacs
+#	systemctl --user stop emacs
+#	systemctl --user disable emacs
+
+[Unit]
+Description=Emacs: the extensible, self-documenting text editor
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/emacs --daemon
+ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
+Restart=always
+
+# Add it the Emacs init script: (setenv "SSH_AUTH_SOCK" "whatever")
+#Environment=SSH_AUTH_SOCK=%t/keyring/ssh
+
+# Remove the limit in startup timeout, since emacs
+# cloning and building all packages can take time
+TimeoutStartSec=infinity
+
+[Install]
+WantedBy=default.target
