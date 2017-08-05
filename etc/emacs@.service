@@ -1,0 +1,26 @@
+# http://blog.refu.co/?p=1296
+#
+# For wide system use, if systemd doesn't support '--user' option
+# Place this file to /etc/systemd/system/emacs@.service
+#
+
+[Unit]
+Description=Emacs: the extensible, self-documenting text editor
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/emacs --daemon
+ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
+Restart=always
+User=%i
+WorkingDirectory="%h"
+
+# Add it the Emacs init script: (setenv "SSH_AUTH_SOCK" "whatever")
+#Environment=SSH_AUTH_SOCK=%t/keyring/ssh
+
+# Remove the limit in startup timeout, since emacs
+# cloning and building all packages can take time
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
